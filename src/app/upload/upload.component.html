@@ -1,0 +1,4 @@
+<button mat-raised-button (click)="fileInput.click()">Choose Corpus</button>
+<input hidden type="file" #fileInput (change)="onFileSelected($event)" accept=".zip"/>
+
+<mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
