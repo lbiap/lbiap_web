@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, Response, send_file
+from flask import Flask, request, jsonify, Response, send_file, send_from_directory
 import os
 import uuid
 import zipfile
@@ -18,6 +18,7 @@ def update_variable(value):
     unzipped_dir = value
 
 UPLOAD_FOLDER = "/home/michael/uploaded_files"  # This sets the path to an 'uploads' directory in your current working directory
+angular_src_folder = '/home/michael/Summer 2023/lbiap_web/lbiap_web/lbiap_web-1/uploads'
 
 def countWords(tokens_ls):
 	return len(tokens_ls)
@@ -63,6 +64,10 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/<filename>.zip')
+def download_file(filename):
+    return send_from_directory(angular_src_folder, filename + '.zip', as_attachment=True)
 
 @app.route('/upload', methods=['POST'])
 def upload_file():

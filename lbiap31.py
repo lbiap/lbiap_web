@@ -26,26 +26,34 @@ global filename_input
 global wd
 global newdir
 
+
+
 def zip_directory(directory_path):
     """
-    Zips the provided directory and returns the name of the resulting zip file.
+    Zips the provided directory and places the resulting zip file into a folder called 'uploads'.
 
     :param directory_path: The path to the directory to be zipped.
     :return: The name of the zip file.
     """
-    # Define the name of the zip file (directory name + ".zip")
-    zip_filename = os.path.basename(directory_path) + ".zip"
+    # Ensure the 'uploads' directory exists
+    uploads_dir = 'uploads'
+    if not os.path.exists(uploads_dir):
+        os.makedirs(uploads_dir)
 
-    # Create a new zip file
+    # Define the name of the zip file (uploads/directory name + ".zip")
+    zip_filename = os.path.join(uploads_dir, os.path.basename(directory_path) + ".zip")
+
+    # Create a new zip file in the 'uploads' directory
     with zipfile.ZipFile(zip_filename, 'w', zipfile.ZIP_DEFLATED) as zipf:
         for foldername, subfolders, filenames in os.walk(directory_path):
             for filename in filenames:
-                # create complete filepath of file in directory
+                # Create complete filepath of file in directory
                 file_path = os.path.join(foldername, filename)
                 # Add file to zip
                 zipf.write(file_path, os.path.relpath(file_path, directory_path))
                 
     return zip_filename
+
 
 
 
@@ -541,7 +549,7 @@ def lbiap_go(olddir):
 	#Gets zeroes in the column
 	testvalue5 = (df_final_results == 0).astype(int).sum(axis=0)
 	filecount = len(df_final_results)
-	
+	print(filecount)
 	#Range test
 	columns_to_delete = []
 	for index, value in testvalue5.items():
@@ -844,6 +852,7 @@ def lbiap_go(olddir):
 	print("Done")
 	create_html_files(newdir)
 	zip_file_to_return = zip_directory(olddir)
+	print(zip_file_to_return)
 	return zip_file_to_return
 
 # ---------------------------

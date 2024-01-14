@@ -30,21 +30,24 @@ export class UploadComponent {
     formData.append('file', file);
 
     this.isLoading = true;
-    this.http.post('http://localhost:5000/upload', formData, { responseType: 'blob' }).subscribe(
-        (response: Blob) => {
-            const blob = new Blob([response], { type: 'zip' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'files.csv';
-            a.click();
-            window.URL.revokeObjectURL(url);
-            this.isLoading = false;
-        },
-        (error) => {
-            this.isLoading = false;
-            alert('Failed: ' + error.message);
-        }
-    );
+    this.http.post('http://localhost:5000/upload', formData, { responseType: 'text' }).subscribe(
+      (response: string) => {
+          // response is now correctly treated as a string
+          const url = response; // URL from the response
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'files.zip'; // Set the default file name for the download
+          document.body.appendChild(a); // Append the element to the body
+          a.click();
+          console.log(url);
+          document.body.removeChild(a); // Clean up the DOM by removing the 'a' element
+          this.isLoading = false;
+      },
+      (error) => {
+          this.isLoading = false;
+          console.error('Upload error:', error);
+          alert('Upload failed. See console for details.');
+      }
+  );
   }
 }
