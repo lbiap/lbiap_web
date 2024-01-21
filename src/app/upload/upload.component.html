@@ -2,3 +2,8 @@
 <input hidden type="file" #fileInput (change)="onFileSelected($event)" accept=".zip"/>
 
 <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+
+<!-- Add a link that appears when the downloadLink is available -->
+<a *ngIf="downloadLink" href="{{ downloadLink }}" download="files.zip">
+  Success. Download your LBs here.
+</a>

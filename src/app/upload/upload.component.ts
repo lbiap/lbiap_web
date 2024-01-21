@@ -10,6 +10,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 export class UploadComponent {
   @ViewChild('fileInput') fileInput!: ElementRef;
   isLoading = false;
+  downloadLink: string | null = null; // Add a property for the download link
 
   constructor(private http: HttpClient) { }
 
@@ -30,17 +31,9 @@ export class UploadComponent {
     formData.append('file', file);
 
     this.isLoading = true;
-    this.http.post('http://localhost:5000/upload', formData, { responseType: 'text' }).subscribe(
-      (response: string) => {
-          // response is now correctly treated as a string
-          const url = response; // URL from the response
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = 'files.zip'; // Set the default file name for the download
-          document.body.appendChild(a); // Append the element to the body
-          a.click();
-          console.log(url);
-          document.body.removeChild(a); // Clean up the DOM by removing the 'a' element
+    this.http.post('http://localhost:5000/upload', formData, { responseType: 'json' }).subscribe(
+      (response: any) => {
+          this.downloadLink = response.download_url; // Set the download URL
           this.isLoading = false;
       },
       (error) => {
@@ -48,6 +41,6 @@ export class UploadComponent {
           console.error('Upload error:', error);
           alert('Upload failed. See console for details.');
       }
-  );
+    );
   }
 }
