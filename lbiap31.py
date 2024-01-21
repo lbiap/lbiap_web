@@ -127,7 +127,7 @@ curr_directory = os.getcwd()
 global df_results_cleaned
 
 
-def functionreport(freqvals):
+def functionreport(olddir, freqvals):
 	freqvals = freqvals.reset_index()
 	print(freqvals)
 	final_lb_list = list(freqvals['index'])
@@ -140,7 +140,7 @@ def functionreport(freqvals):
 	frame4 = final_lb_list_df.join(report_merged, lsuffix='_caller', rsuffix='_other')
 	frame4 = frame4.sort_values(by=['Subcat'])
 	functional_filename = filename_input + "_functionaltaxonomy_results.csv"
-	frame4.to_csv(functional_filename, index='File')
+	frame4.to_csv(olddir + "/" + functional_filename, index='File')
 
 def tokenizecorpus(corp):
 	newdir = os.path.join(corp, "corpus_copyfix")
@@ -232,7 +232,7 @@ def interlock_ctrl(listoflbs, freq_threshold, outputcheckname, df_results_cleane
 			f = ""
 			replace_string = ""
 	current_output_filename = str(outputcheckname)+"check.csv"
-	df_results_cleaned.to_csv( current_output_filename, index='File')
+	df_results_cleaned.to_csv(olddir + "/" + current_output_filename, index='File')
 	return df_results_cleaned
 
 
@@ -525,7 +525,7 @@ def lbiap_go(olddir):
 			xgrams = pd.DataFrame()
 	
 	
-	frame.to_csv("frame2.csv")
+	frame.to_csv(olddir + "/" + "frame2.csv")
 	
 	
 	print("Frequency Check")
@@ -650,7 +650,7 @@ def lbiap_go(olddir):
 	for i in columns_to_delete:
 		del df_final_results_exp[i]
 	results_initial = filename_input + "_results_initial.csv"
-	df_final_results_exp.to_csv(results_initial, index='File')
+	df_final_results_exp.to_csv(olddir + "/" + results_initial, index='File')
 	
 	#move on to reset values
 	df_results_reset = df_final_results_exp
@@ -832,7 +832,7 @@ def lbiap_go(olddir):
 
 # Replace the strings
 	print(freqvals.columns.tolist())
-	freqvals.to_csv(freqvals_filename, index='bundle')
+	freqvals.to_csv(olddir + "/" + freqvals_filename, index='bundle')
 	
 	#df_results_range_check.to_csv(results_final_filename, index='File')
 	df_results_range_check = df_results_range_check.T
@@ -842,12 +842,12 @@ def lbiap_go(olddir):
 
 	df_results_range_check['index'] = df_results_range_check['index'].replace(replace_dict, regex=True)
 
-	df_results_range_check.to_csv(results_final_filename + "T.csv", index='File')
+	df_results_range_check.to_csv(olddir + "/" + results_final_filename + "T.csv", index='File')
 	df_results_range_check = df_results_range_check.T
 	endtime = (time.time() - starttime)
 	
 	
-	functionreport(freqvals)
+	functionreport(olddir, freqvals)
 	print("Execution time: " + str(endtime))
 	print("Done")
 	create_html_files(newdir)
